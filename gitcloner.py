@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 import requests
 import sys
-import json
 import subprocess
 import os
 
