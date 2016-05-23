@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
-import requests
 import sys
 import subprocess
 import os
+import json
+from urllib import request
 
 
 def clone(url, repoName=None):
@@ -40,16 +41,16 @@ def cloneRepos(name, accType):
 
     url = 'https://api.github.com/' + accType + '/' + name + '/repos'
 
-    data = requests.get(url)
+    try:
+        data = request.urlopen(url)
 
-    if not data.ok:
+    except:
         print('Please check your internet connection and try again')
-        print('Request returned: {}'.format(data.status_code))
         sys.exit(1)
 
-    # data = json.loads(data.text)
+    data = data.read().decode('UTF-8')
 
-    data = [d for d in data.json() if d['private'] is False]
+    data = [d for d in json.loads(data) if d['private'] is False]
 
     print('{} repositories to clone'.format(len(data)))
     print('Private repos have been excluded!')
@@ -78,8 +79,8 @@ def main():
 ''')
         sys.exit(1)
 
-    repoType = sys.argv[1]
-    name = sys.argv[2]
+    args = sys.argv[1:3]
+    repoType, name = args
     cloneRepos(name, repoType)
 
 
