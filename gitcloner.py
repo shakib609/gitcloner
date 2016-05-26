@@ -4,17 +4,61 @@ import subprocess
 import os
 import json
 from urllib import request
+from urllib.error import URLError, HTTPError
 
 
-def clone(url, repoName=None):
+def urlToPytype(url):
+    '''Turn the url provided into one of python data types
+    Args:
+        url: api url
+    Returns:
+        Returns the python data
+    '''
+    try:
+        req_data = request.urlopen(url).read().decode('UTF-8')
+    except:
+        raise
+    data = json.loads(req_data)
+
+    return data
+
+
+def getReposFromUrl(base_url):
+    '''Get repos from a base_url
+    Args:
+        base_url: base url of the user/organization repos
+            eg: https://api.github.com/users/shakib609/repos
+
+    Returns:
+        Returns an array containing all the repo info of the user/organization
+    '''
+    per_page = 100
+    page = 1
+    repos = []
+
+    while True:
+        url = base_url + '?per_page={0}&page={1}'.format(per_page, page)
+        try:
+            api_data = urlToPytype(url)
+        except:
+            raise
+        repos.extend(api_data)
+
+        print('{} repos fetched..'.format(len(repos)))
+        if len(api_data) == 100:
+            page += 1
+        else:
+            break
+    return repos
+
+
+def clone(url):
     '''Clones the git repository of url to the current directory
     Args:
         url:        git clone url of the repository
         repoName:   Name of the repo[defaults to None]
     '''
     subprocess.call(['git', 'clone', url])
-    if repoName:
-        print('{} cloned successfully!'.format(repoName))
 
 
 def cloneRepos(name, accType):
@@ -30,38 +74,38 @@ def cloneRepos(name, accType):
     else:
         raise ValueError('accType argument must -u or -o')
 
-    try:
-        os.mkdir(name)
-        os.chdir(name)
-    except:
-        print('Failed to create directory.')
-        print('Make sure you have the right permissions and')
-        print('There\'s no existing directory {}.'.format(name))
-        raise
-
     url = 'https://api.github.com/' + accType + '/' + name + '/repos'
 
     try:
-        data = request.urlopen(url)
+        data = getReposFromUrl(url)
 
-    except:
+    except (URLError, HTTPError):
         print('Please check your internet connection and try again')
         sys.exit(1)
 
-    data = data.read().decode('UTF-8')
-
-    data = [d for d in json.loads(data) if d['private'] is False]
+    data = [d for d in data if d['private'] is False]
 
     print('{} repositories to clone'.format(len(data)))
     print('Private repos have been excluded!')
 
     print('Repositories to be cloned!')
 
+    try:
+        os.mkdir(name)
+        os.chdir(name)
+    except:
+        print('Failed to create directory.')
+        print('Make sure you have the right permissions and')
+        print("There's no existing directory {}.".format(name))
+        raise
+
     for index, repo in enumerate(data):
         print('%2d - %s' % (index + 1, repo['full_name']))
 
-    for repo in data:
-        clone(repo['clone_url'], repo['full_name'])
+    for index, repo in enumerate(data):
+        print('Cloning {} - {}'.format(index, repo['full_name']))
+        clone(repo['clone_url'])
+
     print('All repositories have been cloned successfully to {}!'.format(
                                                 os.path.abspath('.')))
 
