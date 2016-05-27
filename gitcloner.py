@@ -3,6 +3,7 @@ import sys
 import subprocess
 import os
 import json
+import re
 from urllib import request
 from urllib.error import URLError, HTTPError
 
@@ -23,29 +24,29 @@ def urlToPytype(url):
     return data
 
 
-def getReposFromUrl(base_url):
-    '''Get repos from a base_url
+def getReposFromUrl(baseUrl):
+    '''Get repos from a baseUrl
     Args:
-        base_url: base url of the user/organization repos
+        baseUrl: base url of the user/organization repos
             eg: https://api.github.com/users/shakib609/repos
 
     Returns:
         Returns an array containing all the repo info of the user/organization
     '''
-    per_page = 100
+    perPage = 100
     page = 1
     repos = []
 
     while True:
-        url = base_url + '?per_page={0}&page={1}'.format(per_page, page)
+        url = baseUrl + '?per_page={0}&page={1}'.format(perPage, page)
         try:
-            api_data = urlToPytype(url)
+            apiData = urlToPytype(url)
         except:
             raise
-        repos.extend(api_data)
+        repos.extend(apiData)
 
         print('{} repos fetched..'.format(len(repos)))
-        if len(api_data) == 100:
+        if len(apiData) == 100:
             page += 1
         else:
             break
@@ -56,9 +57,16 @@ def clone(url):
     '''Clones the git repository of url to the current directory
     Args:
         url:        git clone url of the repository
-        repoName:   Name of the repo[defaults to None]
     '''
+    repoFolderRegex = re.compile(r'.*/(.*?)\.git')
+    folderName = repoFolderRegex.search(url).group(1)
+
+    if os.path.exists(folderName):
+        print('{} folder exists skipping this repo.\n'.format(folderName))
+        return
+
     subprocess.call(['git', 'clone', url])
+    print()
 
 
 def cloneRepos(name, accType):
@@ -92,18 +100,21 @@ def cloneRepos(name, accType):
 
     try:
         os.mkdir(name)
-        os.chdir(name)
+    except FileExistsError:
+        print('{0} folder exists. Changing working directory to {0}'.
+              format(name))
     except:
-        print('Failed to create directory.')
-        print('Make sure you have the right permissions and')
-        print("There's no existing directory {}.".format(name))
+        print('Failed to create directory {}.'.format(name))
+        print('Make sure you have the right permissions.')
         raise
+
+    os.chdir(name)
 
     for index, repo in enumerate(data):
         print('%2d - %s' % (index + 1, repo['full_name']))
 
     for index, repo in enumerate(data):
-        print('Cloning {} - {}'.format(index, repo['full_name']))
+        print('Cloning {} - {}'.format(index + 1, repo['full_name']))
         clone(repo['clone_url'])
 
     print('All repositories have been cloned successfully to {}!'.format(
