@@ -4,7 +4,7 @@ from urllib.error import URLError, HTTPError
 
 
 class GitAccount:
-    def __init__(accountType, userName):
+    def __init__(self, accountType, userName):
         self._userName = userName
         if not (accountType == 'user' or accountType == 'org'):
             raise ValueError('Invalid accountType argument: {}'.format(
@@ -13,13 +13,13 @@ class GitAccount:
         self._repoUrl = self.getRepoUrl()
         self._repos = getReposFromUrl(self._repoUrl)
 
-    def getRepoUrl():
+    def getRepoUrl(self):
         urlPlaceholder = self._accountType + 's'
         url = 'https://api.github.com/{}/{}/repos'.format(
                                           urlPlaceholder, self._userName)
         return url
 
-    def cloneRepos():
+    def cloneRepos(self):
         try:
             data = getReposFromUrl(self._repoUrl)
         except (URLError, HTTPError):
@@ -29,16 +29,16 @@ class GitAccount:
         data = [d for d in data if d['private'] is False]
 
         try:
-            os.mkdir(name)
+            os.mkdir(self._userName)
         except FileExistsError:
             print('{0} folder exists. Changing working directory to {0}'.
-                  format(name))
+                  format(self._userName))
         except:
-            print('Failed to create directory {}.'.format(name))
+            print('Failed to create directory {}.'.format(self._userName))
             print('Make sure you have the right permissions.')
             raise
 
-        os.chdir(name)
+        os.chdir(self._userName)
 
         print('{} repositories to clone'.format(len(data)))
         print('Private repos have been excluded!')
