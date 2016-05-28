@@ -1,25 +1,23 @@
 import subprocess
 import json
 import re
-from urllib import request
 import os
+import sys
+from urllib import request
 from urllib.parse import urlencode
+from urllib.error import URLError, HTTPError
 
 
-def jsonToPytype(url):
-    """Turn the data of the url provided into one of python data types
+def fetchApiData(url):
+    """Turn the api data of the url provided into one of python data types
     Args:
         url: api url
     Returns:
         Returns the python data
     """
-    try:
-        req_data = request.urlopen(url).read().decode('UTF-8')
-    except:
-        raise
-    data = json.loads(req_data)
-
-    return data
+    with request.urlopen(url) as req:
+        req_data = req.read().decode('UTF-8')
+    return json.loads(req_data)
 
 
 def getReposFromUrl(baseUrl):
@@ -40,16 +38,16 @@ def getReposFromUrl(baseUrl):
     while True:
         url = baseUrl + '?%s' % urlencode(params)
         try:
-            apiData = jsonToPytype(url)
-        except:
-            raise
+            apiData = fetchApiData(url)
+        except (URLError, HTTPError):
+            print('Please Check your internet connection and try again!')
+            sys.exit()
         repos.extend(apiData)
         print('{} repos fetched.'.format(len(repos)))
-        if len(apiData) == 100:
+        if len(apiData) == params['per_page']:
             params['page'] += 1
         else:
-            break
-    return [for repo in repos if not repo['private']]
+            return [repo for repo in repos if not repo['private']]
 
 
 def clone(url):
@@ -61,7 +59,8 @@ def clone(url):
     folderName = repoFolderRegex.search(url).group(1)
 
     if os.path.exists(folderName):
-        print('{} folder exists skipping this repo.\n'.format(folderName))
+        print('{} has been cloned successfully before!'.format(folderName))
+        print('Skipping this repo.\n')
         return
 
     subprocess.call(['git', 'clone', url])

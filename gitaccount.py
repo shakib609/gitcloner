@@ -1,6 +1,5 @@
 import os
 from gitaccounthelpers import getReposFromUrl, clone
-from urllib.error import URLError, HTTPError
 
 
 class GitAccount:
@@ -32,10 +31,9 @@ class GitAccount:
 
         os.chdir(self._userName)
 
-        print('{} repositories to clone'.format(len(data)))
+        print('{} repositories to clone'.format(len(self._repos)))
         print('Private repos have been excluded!')
 
-        print('{} Repositories to be cloned!'.format(len(data)))
         for index, repo in enumerate(self._repos):
             print('%2d - %s' % (index + 1, repo['full_name']))
 
