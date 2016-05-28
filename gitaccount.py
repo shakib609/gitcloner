@@ -21,14 +21,6 @@ class GitAccount:
 
     def cloneRepos(self):
         try:
-            data = getReposFromUrl(self._repoUrl)
-        except (URLError, HTTPError):
-            print('Please check your internet connection and try again')
-            sys.exit(1)
-
-        data = [d for d in data if d['private'] is False]
-
-        try:
             os.mkdir(self._userName)
         except FileExistsError:
             print('{0} folder exists. Changing working directory to {0}'.
@@ -43,11 +35,11 @@ class GitAccount:
         print('{} repositories to clone'.format(len(data)))
         print('Private repos have been excluded!')
 
-        print('Repositories to be cloned!')
-        for index, repo in enumerate(data):
+        print('{} Repositories to be cloned!'.format(len(data)))
+        for index, repo in enumerate(self._repos):
             print('%2d - %s' % (index + 1, repo['full_name']))
 
-        for index, repo in enumerate(data):
+        for index, repo in enumerate(self._repos):
             print('Cloning {} - {}'.format(index + 1, repo['full_name']))
             clone(repo['clone_url'])
 

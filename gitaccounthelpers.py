@@ -49,7 +49,7 @@ def getReposFromUrl(baseUrl):
             params['page'] += 1
         else:
             break
-    return repos
+    return [for repo in repos if not repo['private']]
 
 
 def clone(url):
