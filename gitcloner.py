@@ -9,7 +9,7 @@ from urllib import request
 from urllib.error import URLError, HTTPError
 
 
-def urlToPytype(url):
+def url_to_pytype(url):
     '''Turn the url provided into one of python data types
     Args:
         url: api url
@@ -25,29 +25,29 @@ def urlToPytype(url):
     return data
 
 
-def getReposFromUrl(baseUrl):
-    '''Get repos from a baseUrl
+def get_repos_from_url(base_url):
+    '''Get repos from a base_url
     Args:
-        baseUrl: base url of the user/organization repos
+        base_url: base url of the user/organization repos
             eg: https://api.github.com/users/shakib609/repos
 
     Returns:
         Returns an array containing all the repo info of the user/organization
     '''
-    perPage = 100
+    per_page = 100
     page = 1
     repos = []
 
     while True:
-        url = baseUrl + '?per_page={0}&page={1}'.format(perPage, page)
+        url = base_url + '?per_page={0}&page={1}'.format(per_page, page)
         try:
-            apiData = urlToPytype(url)
+            api_data = url_to_pytype(url)
         except:
             raise
-        repos.extend(apiData)
+        repos.extend(api_data)
 
         print('{} repos fetched..'.format(len(repos)))
-        if len(apiData) == 100:
+        if len(api_data) == 100:
             page += 1
         else:
             break
@@ -59,32 +59,32 @@ def clone(url):
     Args:
         url:        git clone url of the repository
     '''
-    repoFolderRegex = re.compile(r'.*/(.*?)\.git')
-    folderName = repoFolderRegex.search(url).group(1)
+    repo_folder_regex = re.compile(r'.*/(.*?)\.git')
+    folder_name = repo_folder_regex.search(url).group(1)
 
-    if os.path.exists(folderName):
-        print('{} folder exists skipping this repo.\n'.format(folderName))
+    if os.path.exists(folder_name):
+        print('{} folder exists skipping this repo.\n'.format(folder_name))
         return
 
     subprocess.call(['git', 'clone', url])
     print()
 
 
-def cloneRepos(name, accType):
+def cloneRepos(name, acc_type):
     '''Clones all the repositories of the specified type into current directory
     Args:
         name:       user / organization name
-        accType:    type of the requested account ['-u' or '-o']
+        acc_type:    type of the requested account ['-u' or '-o']
 '''
-    if accType == 'user' or accType == 'org':
-        accType += 's'
+    if acc_type == 'user' or acc_type == 'org':
+        acc_type += 's'
     else:
-        raise ValueError('accType argument must -u or -o')
+        raise ValueError('acc_type argument must -u or -o')
 
-    url = 'https://api.github.com/' + accType + '/' + name + '/repos'
+    url = 'https://api.github.com/' + acc_type + '/' + name + '/repos'
 
     try:
-        data = getReposFromUrl(url)
+        data = get_repos_from_url(url)
 
     except (URLError, HTTPError):
         print('Please check your internet connection and try again')
@@ -140,12 +140,12 @@ def main():
 
     if args.user:
         print('Username: {}'.format(args.name))
-        accType = 'user'
+        acc_type = 'user'
     else:
         print('Organization: {}'.format(args.name))
-        accType = 'org'
+        acc_type = 'org'
 
-    cloneRepos(args.name, accType)
+    cloneRepos(args.name, acc_type)
 
 
 if __name__ == '__main__':
