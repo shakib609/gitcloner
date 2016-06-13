@@ -29,7 +29,7 @@ def main():
         accType = 'org'
 
     account = GitAccount(accType, args.name)
-    account.cloneRepos()
+    account.clone_repos()
 
 
 if __name__ == '__main__':

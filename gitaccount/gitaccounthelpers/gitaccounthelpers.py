@@ -8,7 +8,7 @@ from urllib.parse import urlencode
 from urllib.error import URLError, HTTPError
 
 
-def fetchApiData(url):
+def fetch_api_data(url):
     """Turn the api data of the url provided into one of python data types
     Args:
         url: api url
@@ -20,7 +20,7 @@ def fetchApiData(url):
     return json.loads(req_data)
 
 
-def getReposFromUrl(baseUrl):
+def get_repos_from_url(baseUrl):
     """Get repos from a baseUrl
     Args:
         baseUrl: base url of the user/organization repos
@@ -38,7 +38,7 @@ def getReposFromUrl(baseUrl):
     while True:
         url = baseUrl + '?%s' % urlencode(params)
         try:
-            apiData = fetchApiData(url)
+            apiData = fetch_api_data(url)
         except (URLError, HTTPError):
             print('Please Check your internet connection and try again!')
             sys.exit()

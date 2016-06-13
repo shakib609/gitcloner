@@ -1,24 +1,24 @@
 import os
-from gitaccounthelpers import getReposFromUrl, clone
+from gitaccount.gitaccounthelpers.gitaccounthelpers import get_repos_from_url, clone
 
 
 class GitAccount:
-    def __init__(self, accountType, userName):
+    def __init__(self, account_type, userName):
         self._userName = userName
-        if not (accountType == 'user' or accountType == 'org'):
+        if not (account_type == 'user' or account_type == 'org'):
             raise ValueError('Invalid accountType argument: {}'.format(
-                                                               accountType))
-        self._accountType = accountType
-        self._repoUrl = self.getRepoUrl()
-        self._repos = getReposFromUrl(self._repoUrl)
+                                                               account_type))
+        self._account_type = account_type
+        self._repo_url = self.get_repo_url()
+        self._repos = get_repos_from_url(self._repo_url)
 
-    def getRepoUrl(self):
-        urlPlaceholder = self._accountType + 's'
+    def get_repo_url(self):
+        urlPlaceholder = self._account_type + 's'
         url = 'https://api.github.com/{}/{}/repos'.format(
                                           urlPlaceholder, self._userName)
         return url
 
-    def cloneRepos(self):
+    def clone_repos(self):
         try:
             os.mkdir(self._userName)
         except FileExistsError:
