@@ -22,4 +22,5 @@ NAME:
 ```
 
 # Requirements
-The only requirement of this script is *python3*. All modules used in the script are available in the Python Standard Library.
+- `git`
+- `python3`
