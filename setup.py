@@ -11,7 +11,7 @@ setup(
     url='https://github.com/shakib609/gitcloner',
     packages=['gitaccount'],
     package_data={'gitaccount': files},
-    scripts='gitcloner',
+    scripts=['gitcloner'],
     long_description='''Use this script to clone all the public git repos of any
 user or organization of Github'''
 )
