@@ -2,7 +2,7 @@
 Clone all repos of a user or organization with this command line python script.
 
 ## Usage
-```./gitcloner.py [-h] [-u | -o] name```
+```gitcloner [-h] [-u | -o] name```
 
 Valid OPTIONS:
 - `-u` [For user account] [DEFAULT]
