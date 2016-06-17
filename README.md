@@ -2,37 +2,37 @@
 Clone all repos of a user or organization with this command line python script.
 
 ## Usage
-```./gitcloner.py [-u | -o] [NAME]```
+```./gitcloner.py [-h] [-u | -o] name```
 
 Valid OPTIONS:
 - `-u` [For user account] [DEFAULT]
 - `-o` [For organization]
+- `-h` [Help]
 
-NAME:
+`name`:
 - name of the user or organization. eg. shakib609, google etc.
 
 ## Example
+
 - Clone all repos from my account
 ```
-./gitcloner.py shakib609
+gitcloner shakib609
 ```
+
 - Clone all repos from Google
 ```
-./gitcloner.py -o google
+gitcloner -o google
 ```
 
-##Installation
-- With `curl`
-```
-sudo curl -L https://github.com/shakib609/gitcloner/releases/download/1.0/gitcloner -o /usr/local/bin/gitcloner
-sudo chmod a+rx /usr/local/bin/gitcloner
-```
-- With `wget`
-```
-sudo wget https://github.com/shakib609/gitcloner/releases/download/1.0/gitcloner -O /usr/local/bin/gitcloner
-sudo chmod a+rx /usr/local/bin/gitcloner
+## Installation
+
+Install using setup.py file provided
+```sh
+git clone https://github.com/shakib609/gitcloner.git
+python3 setup.py install
 ```
 
-# Requirements
+## Requirements
+
 - `git`
 - `python3`
