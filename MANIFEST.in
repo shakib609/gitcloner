@@ -1,0 +1,4 @@
+include gitcloner README.md
+
+recursive-include gitaccount *
+recursive-include gitaccount/gitaccounthelpers *
