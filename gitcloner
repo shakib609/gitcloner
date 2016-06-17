@@ -32,4 +32,9 @@ def main():
     account.clone_repos()
 
 
-main()
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('\nCloning cancelled!')
+        print('Interrupted by user.')

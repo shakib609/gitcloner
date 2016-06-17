@@ -1,7 +1,9 @@
 # gitcloner
+
 Clone all repos of a user or organization with this command line python script.
 
 ## Usage
+
 ```gitcloner [-h] [-u | -o] name```
 
 Valid OPTIONS:
@@ -29,7 +31,7 @@ gitcloner -o google
 Install using setup.py file provided
 ```sh
 git clone https://github.com/shakib609/gitcloner.git
-python3 setup.py install
+[sudo] python3 setup.py install
 ```
 
 ## Requirements
