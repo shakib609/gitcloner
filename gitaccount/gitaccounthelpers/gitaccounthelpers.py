@@ -20,6 +20,16 @@ def fetch_api_data(url):
     return json.loads(req_data)
 
 
+def check_git(folderName='.'):
+    """Checks whether a folder is a valid git repo
+    Args:
+        folderName: folder to be checked
+    Returns:
+        Boolean
+    """
+    return '.git' in os.listdir(folderName)
+
+
 def get_repos_from_url(baseUrl):
     """Get repos from a baseUrl
     Args:
@@ -64,4 +74,27 @@ def clone(url):
         return
 
     subprocess.call(['git', 'clone', url])
+    print()
+
+
+def already_cloned(userName):
+    try:
+        os.chdir(userName)
+    except:
+        return []
+
+    cloned = filter(lambda f: os.path.isdir(f), os.listdir())
+    valid_clones = list(filter(check_git, cloned))
+    # Back to default directory after getting result
+    os.chdir('..')
+    return valid_clones
+
+
+def pull(folderName):
+    try:
+        os.chdir(folderName)
+    except:
+        raise
+    subprocess.call(['git', 'pull'])
+    os.chdir('..')
     print()

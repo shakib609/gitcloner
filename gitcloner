@@ -7,14 +7,22 @@ def main():
     parser = argparse.ArgumentParser(
              prog='gitcloner',
              description='Clone all the repositories from a github user/org\naccount to the current directory')
-    group = parser.add_mutually_exclusive_group()
 
-    group.add_argument('-u', '--user', help='For user accounts [DEFAULT]',
+    accType = parser.add_mutually_exclusive_group()
+    accType.add_argument('-u', '--user', help='For user accounts [DEFAULT]',
                    action='store_true')
-    group.add_argument('-o', '--org', help='For organization accounts',
+    accType.add_argument('-o', '--org', help='For organization accounts',
                        action='store_true')
-    parser.add_argument('name', help='name of the user / organization')
 
+    command = parser.add_mutually_exclusive_group()
+    command.add_argument('-c', '--clone',
+                     help='For cloning all repos from an account.[DEFAULT]',
+                     action='store_true')
+    command.add_argument('-p', '--pull',
+                         help='Update the existing repos of a user/org.',
+                         action='store_true')
+
+    parser.add_argument('name', help='name of the user / organization')
     args = parser.parse_args()
 
     if not(args.user or args.org):
@@ -29,12 +37,19 @@ def main():
         accType = 'org'
 
     account = GitAccount(accType, args.name)
-    account.clone_repos()
+
+    if not(args.clone or args.pull):
+        args.clone = True
+
+    if args.clone:
+        account.clone_repos()
+    elif args.pull:
+        account.pull_repos()
 
 
 if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print('\nCloning cancelled!')
+        print('\nOperation cancelled!')
         print('Interrupted by user.')
