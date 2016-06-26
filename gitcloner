@@ -15,10 +15,10 @@ def main():
                        action='store_true')
 
     command = parser.add_mutually_exclusive_group()
-    command.add_argument('--clone',
+    command.add_argument('-c', '--clone',
                      help='For cloning all repos from an account.[DEFAULT]',
                      action='store_true')
-    command.add_argument('--pull',
+    command.add_argument('-p', '--pull',
                          help='Update the existing repos of a user/org.',
                          action='store_true')
 
