@@ -43,3 +43,6 @@ class GitAccount:
 
         print('All repositories have been cloned successfully to {}!'.format(
                                                     os.path.abspath('.')))
+
+    def update_repos():
+        pass
