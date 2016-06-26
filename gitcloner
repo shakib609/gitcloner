@@ -44,12 +44,12 @@ def main():
     if args.clone:
         account.clone_repos()
     elif args.pull:
-        account.update_repos()
+        account.pull_repos()
 
 
 if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print('\nCloning cancelled!')
+        print('\nOperation cancelled!')
         print('Interrupted by user.')
