@@ -39,12 +39,12 @@ class GitAccount:
         print('{} repositories to clone'.format(len(repos)))
         print('Private repos have been excluded!')
 
-        for index, repo in enumerate(repos):
-            print('%2d - %s' % (index + 1, repo['full_name']))
+        for index, repo in enumerate(repos, start=1):
+            print('%2d - %s' % (index, repo['full_name']))
         print() # Empty line print to improve readability
 
-        for index, repo in enumerate(repos):
-            print('Cloning {} - {}'.format(index + 1, repo['full_name']))
+        for index, repo in enumerate(repos, start=1):
+            print('Cloning {} - {}'.format(index, repo['full_name']))
             clone(repo['clone_url'])
 
         print('All repositories have been cloned successfully to {}!'.format(
@@ -72,8 +72,8 @@ class GitAccount:
 
         print('{} repos to pull/update\n'.format(len(already_cloned)))
 
-        for repo in enumerate(already_cloned):
-            print('{} - {}'.format(repo[0] + 1, repo[1]))
-            pull(repo[1])
+        for index, reponame in enumerate(already_cloned, start=1):
+            print('{} - {}'.format(index, reponame))
+            pull(reponame)
         os.chdir('..')
 
