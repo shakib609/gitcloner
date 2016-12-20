@@ -1,5 +1,6 @@
 import os
-from gitaccount.gitaccounthelpers.gitaccounthelpers import get_repos_from_url, clone, pull, already_cloned
+from gitaccount.gitaccounthelpers.gitaccounthelpers import (
+    get_repos_from_url, clone, pull, already_cloned)
 
 
 class GitAccount:
@@ -41,7 +42,7 @@ class GitAccount:
 
         for index, repo in enumerate(repos, start=1):
             print('%2d - %s' % (index, repo['full_name']))
-        print() # Empty line print to improve readability
+        print()  # Empty line print to improve readability
 
         for index, repo in enumerate(repos, start=1):
             print('Cloning {} - {}'.format(index, repo['full_name']))
@@ -52,11 +53,9 @@ class GitAccount:
         # Back to default directory after getting result
         os.chdir('..')
 
-
     def get_already_cloned(self):
         self._already_cloned = already_cloned(self._userName)
         return self._already_cloned
-
 
     def pull_repos(self):
         already_cloned = self.get_already_cloned()
@@ -76,4 +75,3 @@ class GitAccount:
             print('{} - {}'.format(index, reponame))
             pull(reponame)
         os.chdir('..')
-
