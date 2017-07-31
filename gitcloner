@@ -1,31 +1,44 @@
 #! /usr/bin/env python3
 import argparse
+import sys
 from gitaccount import GitAccount
 
 
 def main():
     parser = argparse.ArgumentParser(
              prog='gitcloner',
-             description='Clone all the repositories from a github user/org\naccount to the current directory')
+             description='''Clone all the repositories from a github user/org
+             account to the current directory''')
 
     accType = parser.add_mutually_exclusive_group()
     accType.add_argument('-u', '--user', help='For user accounts [DEFAULT]',
-                   action='store_true')
+                         action='store_true')
     accType.add_argument('-o', '--org', help='For organization accounts',
-                       action='store_true')
+                         action='store_true')
+
+    type_of_repo = parser.add_mutually_exclusive_group()
+    type_of_repo.add_argument('-r', '--repo',
+                              help='For cloning repos only[DEFAULT]',
+                              action='store_true')
+    type_of_repo.add_argument('-g', '--gist', help='For cloning gists only',
+                              action='store_true')
+    type_of_repo.add_argument('-a', '--all',
+                              help='For cloning repos and gists together',
+                              action='store_true')
 
     command = parser.add_mutually_exclusive_group()
     command.add_argument('-c', '--clone',
-                     help='For cloning all repos from an account.[DEFAULT]',
-                     action='store_true')
+                         help='''For cloning all repos/gists from an account.
+                         [DEFAULT]''',
+                         action='store_true')
     command.add_argument('-p', '--pull',
-                         help='Update the existing repos of a user/org.',
+                         help='Update the existing repos/gists of a user/org.',
                          action='store_true')
 
     parser.add_argument('name', help='name of the user / organization')
     args = parser.parse_args()
 
-    if not(args.user or args.org):
+    if not args.org:
         args.user = True
         print('Default account type is user account')
 
@@ -41,10 +54,24 @@ def main():
     if not(args.clone or args.pull):
         args.clone = True
 
-    if args.clone:
-        account.clone_repos()
-    elif args.pull:
-        account.pull_repos()
+    if not(args.gist or args.all):
+        args.repo = True
+
+    if (args.gist or args.all) and args.org:
+        print('Cloning gists of an organization is not supported!')
+        sys.exit(1)
+
+    if args.repo or args.all:
+        if args.clone:
+            account.clone_repos()
+        else:
+            account.pull_repos()
+
+    if args.gist or args.all:
+        if args.clone:
+            account.clone_gists()
+        else:
+            account.pull_gists()
 
 
 if __name__ == '__main__':
@@ -53,3 +80,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print('\nOperation cancelled!')
         print('Interrupted by user.')
+        sys.exit(1)

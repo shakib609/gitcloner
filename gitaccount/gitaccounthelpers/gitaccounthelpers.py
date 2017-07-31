@@ -60,6 +60,36 @@ def get_repos_from_url(baseUrl):
             return [repo for repo in repos if not repo['private']]
 
 
+def get_gists_from_url(baseUrl):
+    """Get gists from a baseUrl
+    Args:
+        baseUrl: base url of the user/organization gists
+            eg: https://api.github.com/users/shakib609/gists
+
+    Returns:
+        Returns an array containing all the gists info of the user/organization
+    """
+    params = {
+        'per_page': 100,
+        'page': 1
+    }
+    gists = []
+
+    while True:
+        url = baseUrl + '?%s' % urlencode(params)
+        try:
+            apiData = fetch_api_data(url)
+        except (URLError, HTTPError):
+            print('Please Check your internet connection and try again!')
+            sys.exit()
+        gists.extend(apiData)
+        print('{} gists fetched.'.format(len(gists)))
+        if len(apiData) == params['per_page']:
+            params['page'] += 1
+        else:
+            return [gist for gist in gists]
+
+
 def clone(url):
     """Clones the git repository of url to the current directory
     Args:
@@ -70,16 +100,16 @@ def clone(url):
 
     if os.path.exists(folderName):
         print('{} has been cloned successfully before!'.format(folderName))
-        print('Skipping this repo.\n')
+        print('Skipping this repo/gist.\n')
         return
 
     subprocess.call(['git', 'clone', url])
     print()
 
 
-def already_cloned(userName):
+def already_cloned(dir):
     try:
-        os.chdir(userName)
+        os.chdir(dir)
     except:
         return []
 
